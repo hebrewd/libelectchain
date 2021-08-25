@@ -1,11 +1,15 @@
-(ns libelectchain.core)
+(ns libelectchain.core
+  (:require [buddy.core.keys :as keys]
+            [buddy.core.dsa :as dsa]))
 
 (def blockchain (atom {}))
 (def pending (atom (vector)))
 
-(def append [to coin sig]
+
+
+(defn append [to coin sig]
   (let [item {:to to :coin coin :sig sig}]
-    (swap! conj pending item)))
+    (swap! pending conj item)))
 
 (defn foo "I don't do a whole lot."
   [x]
