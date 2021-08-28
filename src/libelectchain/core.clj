@@ -22,7 +22,7 @@
   (let [datastring (str sha to coin)]
       (cond
         (dsa/verify datastring sig {:key public-key :alg :rsassa-pss+sha256}) (swap! blockchain assoc sha item)
-        ())))
+        (dsa/verify datastring (:sig (get @blockchain coin)) {:key public-key :agl :rsassa-pss+sha256}) (swap! blockchain assoc sha item))
 
 (defn append [sha to coin sig]
   (let [item {:sha sha :to to :coin coin :sig sig}]
