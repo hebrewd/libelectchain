@@ -1,0 +1,2 @@
+{:deps
+ {buddy/buddy-core {:mvn/version "1.7.1"}}}
