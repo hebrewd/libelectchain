@@ -1,6 +1,8 @@
 #!/bin/sh
+
+
 #Private-key
-openssl genrsa -out privkey.pem 2048
+openssl genrsa -out $1/privkey.pem 2048
 
 #Public-key
-openssl rsa -pubout -in privkey.pem -out pubkey.pem
+openssl rsa -pubout -in $1/privkey.pem -out $1/pubkey.pem
