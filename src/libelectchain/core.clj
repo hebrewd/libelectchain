@@ -9,9 +9,10 @@
 (def private-key (keys/private-key "/tmp/privatekey.pem"))
 (def public-key (keys/public-key "/tmp/publickey.pem"))
 
+(comment
 (verify (first @pending))
 
-(item->sha256 1 2 4)
+(item->sha256 1 2 4))
 
 (defn item->sha256 [to coin sig]
   (-> (str to coin sig)
@@ -21,13 +22,13 @@
 (defn gift [to]
   (let [sig (dsa/sign (str to nil) {:key private-key :alg :rsassa-pss+sha256})
         sha (item->sha256 to nil sig)]
-  {:to to :sig sig :sha sha :coin nil})
+  {:to to :sig sig :sha sha :coin nil}))
 
 (defn verify [{:keys [sha to coin sig]} item]
   (let [datastring (str to coin)]
       (cond
         (dsa/verify datastring sig {:key public-key :alg :rsassa-pss+sha256}) (swap! blockchain assoc sha item)
-        (dsa/verify datastring (:sig (get @blockchain coin)) {:key public-key :alg :rsassa-pss+sha256}) (swap! blockchain assoc sha item))
+        (dsa/verify datastring (:sig (get @blockchain coin)) {:key public-key :alg :rsassa-pss+sha256}) (swap! blockchain assoc sha item))))
 
 (defn append [sha to coin sig]
   (let [item {:sha sha :to to :coin coin :sig sig}]
