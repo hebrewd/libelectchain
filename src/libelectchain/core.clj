@@ -18,11 +18,16 @@
   (hash/sha256)
   (bytes->hex)))
 
+(defn gift [to]
+  (let [sig (dsa/sign (str to nil) {:key private-key :alg :rsassa-pss+sha256})
+        sha (item->sha256 to nil sig)]
+  {:to to :sig sig :sha sha :coin nil})
+
 (defn verify [{:keys [sha to coin sig]} item]
-  (let [datastring (str sha to coin)]
+  (let [datastring (str to coin)]
       (cond
         (dsa/verify datastring sig {:key public-key :alg :rsassa-pss+sha256}) (swap! blockchain assoc sha item)
-        (dsa/verify datastring (:sig (get @blockchain coin)) {:key public-key :agl :rsassa-pss+sha256}) (swap! blockchain assoc sha item))
+        (dsa/verify datastring (:sig (get @blockchain coin)) {:key public-key :alg :rsassa-pss+sha256}) (swap! blockchain assoc sha item))
 
 (defn append [sha to coin sig]
   (let [item {:sha sha :to to :coin coin :sig sig}]
